@@ -32,4 +32,21 @@ router.get("/admin", ensureAdmin, (req, res) => {
   });
 });
 
+router.post("/admin/revoke/:sessionId", ensureAdmin, (req, res) => {
+  const sessionStore = req.sessionStore;
+  const sessionId = req.params.sessionId;
+  
+  if (!sessionStore || !sessionStore.destroy) {
+    return res.status(500).send("Session store not available");
+  }
+  
+  sessionStore.destroy(sessionId, (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error revoking session");
+    }
+    res.redirect("/admin");
+  });
+});
+
 export default router;
