@@ -20,6 +20,7 @@ const githubStrategy = new GitHubStrategy(
       id: Date.now(),
       name: profile.displayName || profile.username,
       githubId: profile.id,
+      role: "user",
     };
     userModel.createUser(newUser);
     return done(null, newUser);
