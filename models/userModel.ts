@@ -1,8 +1,9 @@
 interface User {
   id: number;
   name: string;
-  email: string;
-  password: string;
+  email?: string;
+  password?: string;
+  githubId?: string;
 }
 
 const database: User[] = [
@@ -35,6 +36,14 @@ const userModel = {
   findById: (id: number): User | null => {
     const user = database.find((user) => user.id === id);
     return user || null;
+  },
+  findByGithubId: (githubId: string): User | null => {
+    const user = database.find((user) => user.githubId === githubId);
+    return user || null;
+  },
+  createUser: (user: User): User => {
+    database.push(user);
+    return user;
   },
 };
 

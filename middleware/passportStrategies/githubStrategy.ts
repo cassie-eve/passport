@@ -1,24 +1,34 @@
-import { Strategy as GitHubStrategy } from 'passport-github2';
+import { Strategy as GitHubStrategy } from "passport-github2";
+import { userModel, User } from "../../models/userModel";
 import { PassportStrategy } from '../../interfaces/index';
-import { Request } from 'express';
+import { VerifyCallback } from "passport-oauth2";
 
-const githubStrategy: GitHubStrategy = new GitHubStrategy(
-    {
-        clientID: "",
-        clientSecret: "",
-        callbackURL: "",
-        passReqToCallback: true,
-    },
+const githubStrategy = new GitHubStrategy(
+  {
+    clientID: process.env.GITHUB_CLIENT_ID as string,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+    callbackURL: process.env.GITHUB_CALLBACK_URL as string,
+  },
+  (accessToken: string, refreshToken: string, profile: any, done: VerifyCallback) => {
+    let user = userModel.findByGithubId(profile.id);
     
-    async (req: Request, accessToken: string, refreshToken: string, profile: any, done: (error: any, user?: any) => void) => {
-        // TODO: Implement GitHub authentication logic
-        done(null, false);
-    },
+    if (user) {
+      return done(null, user);
+    }
+    
+    const newUser: User = {
+      id: Date.now(),
+      name: profile.displayName || profile.username,
+      githubId: profile.id,
+    };
+    userModel.createUser(newUser);
+    return done(null, newUser);
+  }
 );
 
 const passportGitHubStrategy: PassportStrategy = {
-    name: 'github',
-    strategy: githubStrategy,
+  name: 'github',
+  strategy: githubStrategy,
 };
 
 export default passportGitHubStrategy;
