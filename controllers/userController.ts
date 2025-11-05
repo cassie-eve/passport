@@ -1,15 +1,21 @@
-import {userModel} from "../models/userModel";
+import {userModel, User} from "../models/userModel";
 
-const getUserByEmailIdAndPassword = (email: string, password: string) => {
+type AuthResult = 
+  | { success: true; user: User }
+  | { success: false; message: string };
+
+const getUserByEmailIdAndPassword = (email: string, password: string): AuthResult => {
   let user = userModel.findOne(email);
   if (user) {
     if (isUserValid(user, password)) {
-      return user;
+      return { success: true, user };
+    } else {
+      return { success: false, message: "Password is incorrect" };
     }
   }
-  return null;
+  return { success: false, message: `Couldn't find user with email: ${email}` };
 };
-const getUserById = (id:any) => {
+const getUserById = (id: number): User | null => {
   let user = userModel.findById(id);
   if (user) {
     return user;
@@ -17,7 +23,7 @@ const getUserById = (id:any) => {
   return null;
 };
 
-function isUserValid(user: any, password: string) {
+function isUserValid(user: User, password: string): boolean {
   return user.password === password;
 }
 

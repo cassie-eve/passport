@@ -1,5 +1,6 @@
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import { PassportStrategy } from '../../interfaces/index';
+import { Request } from 'express';
 
 const githubStrategy: GitHubStrategy = new GitHubStrategy(
     {
@@ -9,8 +10,10 @@ const githubStrategy: GitHubStrategy = new GitHubStrategy(
         passReqToCallback: true,
     },
     
-    /* FIX ME 😭 */
-    async (req: any, accessToken: any, refreshToken: any, profile: any, done: any) => {},
+    async (req: Request, accessToken: string, refreshToken: string, profile: any, done: (error: any, user?: any) => void) => {
+        // TODO: Implement GitHub authentication logic
+        done(null, false);
+    },
 );
 
 const passportGitHubStrategy: PassportStrategy = {

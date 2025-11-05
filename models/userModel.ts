@@ -1,4 +1,11 @@
-const database = [
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+}
+
+const database: User[] = [
   {
     id: 1,
     name: "Jimmy Smith",
@@ -21,22 +28,14 @@ const database = [
 
 const userModel = {
 
-  /* FIX ME (types) 😭 */
-  findOne: (email: any) => {
+  findOne: (email: string): User | null => {
     const user = database.find((user) => user.email === email);
-    if (user) {
-      return user;
-    }
-    throw new Error(`Couldn't find user with email: ${email}`);
+    return user || null;
   },
-  /* FIX ME (types) 😭 */
-  findById: (id: any) => {
+  findById: (id: number): User | null => {
     const user = database.find((user) => user.id === id);
-    if (user) {
-      return user;
-    }
-    throw new Error(`Couldn't find user with id: ${id}`);
+    return user || null;
   },
 };
 
-export { database, userModel };
+export { database, userModel, User };

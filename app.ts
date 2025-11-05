@@ -1,6 +1,7 @@
 import express from "express";
 import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
+import flash from "connect-flash";
 import path from "path";
 import passportMiddleware from './middleware/passportMiddleware';
 
@@ -30,6 +31,7 @@ import indexRoute from "./routes/indexRoute";
 app.use(express.json());
 app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true }));
+app.use(flash());
 passportMiddleware(app);
 
 app.use((req, res, next) => {
